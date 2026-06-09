@@ -1,0 +1,149 @@
+"use client";
+
+import { Card, CardBody, Button, Spinner, Alert } from "@heroui/react";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
+
+import { authClient } from "@/lib/auth-client";
+import Chatbox from "@/components/app/chatbox";
+
+export default function ChatLayout() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const { data: session, isPending, error } = authClient.useSession();
+
+  const [channels, setChannels] = useState<any[]>([]);
+  const [loadingChannels, setLoadingChannels] = useState(true);
+
+  const hasLoadedChannels = useRef(false);
+
+  // Redirect if not logged in
+  useEffect(() => {
+    if (!isPending && !session?.user) {
+      router.push("/login");
+    }
+  }, [isPending, session?.user, router]);
+
+  // Load channels ONCE
+  useEffect(() => {
+    const userId = session?.user?.id;
+    if (!userId || hasLoadedChannels.current) return;
+
+    hasLoadedChannels.current = true;
+
+    async function loadChannels() {
+      try {
+        const res = await fetch(`/api/channels?server=test`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) throw new Error("Failed to fetch channels");
+
+        const data = await res.json();
+        setChannels(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingChannels(false);
+      }
+    }
+
+    loadChannels();
+  }, [session?.user?.id]);
+
+  // derive active channel FROM URL (no state)
+  const activeChannel =
+    pathname?.split("/").pop() === "home"
+      ? null
+      : pathname?.split("/").pop() ?? null;
+
+  if (isPending)
+    return (
+      <div className="flex items-center justify-center h-screen w-screen bg-black">
+        <Spinner color="primary" size="lg" />
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex items-center justify-center h-screen bg-black">
+        <Alert
+          color="danger"
+          description={error.message}
+          title="Nefira crashed unexpectedly, please refresh the page and try again."
+          variant="faded"
+        />
+      </div>
+    );
+
+  if (!session?.user) {
+    return (
+      <div className="flex items-center justify-center h-screen w-screen bg-black">
+        <Spinner color="primary" size="lg" />
+      </div>
+    );
+  }
+
+  const dmButtons = [
+    { label: "Home", channelId: null },
+    ...channels.map((channel) => ({
+      label: `#${channel.name}`,
+      channelId: channel.id,
+    })),
+  ];
+
+  return (
+    <div className="flex h-screen w-screen bg-black p-3 gap-3">
+      {/* Server List */}
+      <Card className="w-16 h-full flex-shrink-0 rounded-2xl">
+        <CardBody className="flex flex-col items-center justify-start gap-3 py-4">
+          <div className="w-10 h-10 bg-default-200 rounded-full" />
+          <div className="w-10 h-10 bg-default-200 rounded-full" />
+          <div className="w-10 h-10 bg-default-200 rounded-full" />
+        </CardBody>
+      </Card>
+
+      {/* Channel List */}
+      <Card className="w-64 h-full flex-shrink-0 rounded-2xl">
+        <CardBody className="flex flex-col gap-3 p-4 overflow-y-auto">
+          {loadingChannels ? (
+            <Spinner size="sm" />
+          ) : (
+            dmButtons.map((dm) => (
+              <Button
+                key={dm.channelId ?? "home"}
+                className="justify-start p-3 rounded-xl"
+                size="lg"
+                variant={activeChannel === dm.channelId ? "solid" : "ghost"}
+                onPress={() => {
+                  router.push(
+                    dm.channelId ? `/app/${dm.channelId}` : "/app/home",
+                  );
+                }}
+              >
+                {dm.label}
+              </Button>
+            ))
+          )}
+        </CardBody>
+      </Card>
+
+      {/* Chat */}
+      <div className="flex flex-col flex-1 min-h-0 gap-3 overflow-hidden">
+        {activeChannel ? (
+          <Chatbox channelId={activeChannel} />
+        ) : (
+          <div className="flex-1 flex items-center justify-center bg-default-50 rounded-2xl">
+            <div className="text-center">
+              <h1 className="text-4xl font-bold mb-2">Welcome to Nefira!</h1>
+              <p className="text-lg text-gray-200">
+                Choose a channel to start
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

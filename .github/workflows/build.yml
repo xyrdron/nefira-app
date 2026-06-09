@@ -1,0 +1,68 @@
+name: Deployment integrity check
+run-name: Deployment integrity check
+
+on:
+  repository_dispatch:
+    types:
+      - 'vercel.deployment.ready'
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+
+  # -----------------------------------
+  # Job 1: Lint
+  # -----------------------------------
+  lint:
+    name: ESLint Check
+    runs-on: ubuntu-latest
+    outputs:
+      lint-status: ${{ steps.lint.outcome }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20' 
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run Lint
+        id: lint
+        run: npx eslint .
+        
+      - name: 'Notify vercel'
+        uses: 'vercel/repository-dispatch/actions/status@v1'
+        with:
+          name: "Vercel - nefira-app: lint"
+
+  # -----------------------------------
+  # Job 2: Build
+  # -----------------------------------
+  build:
+    name: Build check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Build
+        run: npm run build
+
+      - name: 'Notify vercel'
+        uses: 'vercel/repository-dispatch/actions/status@v1'
+        with:
+          name: "Vercel - nefira-app: build"

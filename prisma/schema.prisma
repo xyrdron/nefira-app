@@ -1,0 +1,143 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id              String    @id
+  name            String
+  email           String
+  emailVerified   Boolean   @default(false)
+  image           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  username        String?
+  displayUsername String?
+  role            String?
+  banned          Boolean?  @default(false)
+  banReason       String?
+  banExpires      DateTime?
+  sessions        Session[]
+  accounts        Account[]
+  serversOwned    Server[]        @relation("ServerOwner")
+  serverMemberships ServerMember[]
+  messages        Message[]
+
+  @@unique([email])
+  @@unique([username])
+  @@map("user")
+  @@index([email,id])
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
+
+  @@unique([token])
+  @@map("session")
+  @@index([userId,token])
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @default(now()) @updatedAt
+
+  @@map("account")
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
+  @@index([identifier])
+}
+
+/// ------------------- Chat / Server Models -------------------
+
+model Server {
+  id          String         @id @default(uuid())
+  name        String
+  description String?
+  ownerId     String
+  owner       User           @relation("ServerOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  channels    Channel[]
+  members     ServerMember[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now()) @updatedAt
+  @@map("server")
+  @@index([ownerId,id,name])
+}
+
+model ServerMember {
+  id        String   @id @default(uuid())
+  serverId  String
+  userId    String
+  role      String   @default("member") // member, admin, owner etc.
+  joinedAt  DateTime @default(now())
+  
+  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([serverId, userId])
+  @@map("server_member")
+  @@index([userId])
+}
+
+model Channel {
+  id        String    @id @default(uuid())
+  name      String
+  serverId  String
+  type      String    @default("text") // text, voice, announcement etc.
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+
+  server    Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  @@map("channel")
+  @@index([serverId])
+}
+
+model Message {
+  id        String    @id @default(uuid())
+  content   String
+  authorId  String
+  channelId String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
+
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  channel   Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  @@map("message")
+  @@index([channelId, createdAt])
+}
