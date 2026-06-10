@@ -2,8 +2,8 @@
 import { betterAuth } from "better-auth";
 // @ts-ignore
 import { prismaAdapter } from "better-auth/adapters/prisma";
-// @ts-ignore
-import { PrismaClient } from "@prisma/client";
+// Use the shared Prisma instance that is initialized with the adapter
+import { prisma } from "../prisma";
 // @ts-ignore
 import { nextCookies } from "better-auth/next-js";
 // @ts-ignore
@@ -31,7 +31,7 @@ const bannedUsernames = [
   "gamer123",
 ];
 
-const prisma = new PrismaClient();
+// `prisma` is imported above
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {

@@ -1,7 +1,28 @@
-import { PrismaClient } from "@prisma/client";
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+// 1. Create your database connection pool
+// Configure connection pool. For managed Postgres providers like Supabase
+// we often need to enable SSL with relaxed cert verification in Node.
+const poolConfig: any = {
+  connectionString: process.env.DATABASE_URL,
+};
 
-export const prisma = globalForPrisma.prisma || new PrismaClient();
+// If the DATABASE_URL looks like a Supabase-hosted URL, enable SSL with
+// rejectUnauthorized=false to avoid cert verification issues. You can also
+// set an explicit env var like DATABASE_SSL=true to force this behavior.
+if (
+  process.env.DATABASE_SSL === "true" ||
+  (process.env.DATABASE_URL && process.env.DATABASE_URL.includes("supabase"))
+) {
+  poolConfig.ssl = { rejectUnauthorized: false };
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+const pool = new Pool(poolConfig);
+
+// 2. Wrap it in the Prisma adapter
+const adapter = new PrismaPg(pool);
+
+// 3. Construct PrismaClient with the adapter configuration
+export const prisma = new PrismaClient({ adapter });
