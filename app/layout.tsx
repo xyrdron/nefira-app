@@ -1,8 +1,7 @@
 // @ts-ignore: CSS module declaration missing in project
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
@@ -46,8 +45,7 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <main>{children}</main>
         </Providers>
-        <Analytics />
-        <SpeedInsights />
+        <GoogleAnalytics gaId="G-4JBB9N10D9" />
       </body>
     </html>
   );

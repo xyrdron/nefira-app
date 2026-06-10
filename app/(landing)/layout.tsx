@@ -1,6 +1,4 @@
 import { Link } from "@heroui/link";
-import { GoogleAnalytics } from "@next/third-parties/google";
-
 import { Navbar } from "@/components/nav/landnav";
 
 export default function LandingLayout({
@@ -26,7 +24,6 @@ export default function LandingLayout({
           <span className="text-default-600">and Mizook HQ 2025</span>
         </Link>
       </footer>
-      <GoogleAnalytics gaId="G-RNPH0GWF53" />
     </div>
   );
 }
