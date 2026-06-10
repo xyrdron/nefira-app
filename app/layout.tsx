@@ -19,6 +19,13 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   manifest: "/manifest.webmanifest",
+  openGraph: {
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: 'https://nefira.xyz',
+    siteName: siteConfig.name,
+    type: 'website',
+  },
 };
 
 export const viewport: Viewport = {

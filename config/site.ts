@@ -26,6 +26,7 @@ export const siteConfig = {
     },*/
   ],
   navMenuItems: [
+    /*
     {
       label: "Profile",
       href: "/profile",
@@ -58,6 +59,7 @@ export const siteConfig = {
       label: "Logout",
       href: "/app/logout",
     },
+    */
   ],
   links: {
     github: "https://github.com/xyrdron/",
