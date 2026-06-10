@@ -45,7 +45,7 @@ export default function RootLayout({
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
           <main>{children}</main>
         </Providers>
-        <GoogleAnalytics gaId="G-4JBB9N10D9" />
+        <GoogleAnalytics gaId="G-8PGY0KW657" />
       </body>
     </html>
   );
