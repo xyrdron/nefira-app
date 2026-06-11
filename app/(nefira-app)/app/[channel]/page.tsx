@@ -121,7 +121,7 @@ export default function ChatLayout() {
             dmButtons.map((dm) => (
               <Button
                 key={dm.channelId ?? "home"}
-                className="justify-start p-3 rounded-xl"
+                className="justify-start p-3 w-full rounded-xl"
                 size="lg"
                 //variant={activeChannel === dm.channelId ? "solid" : "ghost"}
                 onPress={() => {

@@ -27,7 +27,7 @@ export default function AuthLayout({
       <Navbar />
       <main className="container px-0 lg:px-0 w-full max-w-[1600px] mx-auto flex-grow overflow-hidden">
         <PreloadedBackground>
-          <Card className="p-6 w-full max-w-md space-y-4 shadow-lg">
+          <Card className="p-6 bg-black w-full max-w-md space-y-4 shadow-lg">
             {children}
           </Card>
         </PreloadedBackground>

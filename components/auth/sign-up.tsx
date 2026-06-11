@@ -91,7 +91,7 @@ export default function CreateUserPage() {
     });
   }
 
-  const handleCreate = async (e: React.FormEvent) => {
+  const handleCreate = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     showAlert("", "", alertVariant, false);

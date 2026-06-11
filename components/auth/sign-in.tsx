@@ -2,14 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { 
-  Button, 
-  Input, 
-  Checkbox, 
-  Spinner, 
-  Alert, 
-  TextField, 
-  Label 
+import {
+  Button,
+  Input,
+  Checkbox,
+  Spinner,
+  Alert,
+  TextField,
+  Label,
 } from "@heroui/react";
 import { Key } from "lucide-react";
 import Link from "next/link";
@@ -26,9 +26,9 @@ export default function SignIn() {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertVariant, setAlertVariant] = useState<
     "success" | "danger" | "warning"
-  >("success");
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertTitle, setAlertTitle] = useState("");
+  >("danger");
+  const [alertMessage, setAlertMessage] = useState("An error has occured");
+  const [alertTitle, setAlertTitle] = useState("Error");
 
   const router = useRouter();
 
@@ -51,10 +51,10 @@ export default function SignIn() {
 
   function waitForTurnstile() {
     return new Promise<string>((resolve) => {
-      setModalOpen(true); 
+      setModalOpen(true);
       const handler = (token: string) => {
-        setModalOpen(false); 
-        resolve(token); 
+        setModalOpen(false);
+        resolve(token);
       };
 
       setTurnstileCallback(() => handler);
@@ -65,7 +65,7 @@ export default function SignIn() {
     e.preventDefault();
     setLoading(true);
     showAlert("", "", alertVariant, false);
-    
+
     try {
       const token = await waitForTurnstile();
       const { data, error } = await signIn.email(
@@ -125,13 +125,14 @@ export default function SignIn() {
 
   return (
     <form className="space-y-4" onSubmit={handleSignIn}>
-      {/* 1. Alert is now a Compound Component */}
       {alertVisible && (
         <Alert status={alertVariant}>
           <Alert.Indicator />
           <Alert.Content>
             {alertTitle && <Alert.Title>{alertTitle}</Alert.Title>}
-            {alertMessage && <Alert.Description>{alertMessage}</Alert.Description>}
+            {alertMessage && (
+              <Alert.Description>{alertMessage}</Alert.Description>
+            )}
           </Alert.Content>
         </Alert>
       )}
@@ -145,12 +146,7 @@ export default function SignIn() {
 
       <div className="space-y-3">
         {/* 2. Inputs use the new TextField wrapper */}
-        <TextField
-          isRequired
-          type="email"
-          value={email}
-          onChange={setEmail} 
-        >
+        <TextField isRequired type="email" value={email} onChange={setEmail}>
           <Label>Email</Label>
           <Input placeholder="gamer@nefira.xyz" />
         </TextField>
@@ -167,28 +163,25 @@ export default function SignIn() {
 
         <div className="flex items-center gap-2">
           {/* 3. Checkbox requires a Label child and uses onChange */}
-          <Checkbox
-            isSelected={rememberMe}
-            onChange={setRememberMe}
-          >
-            <Label className="text-sm">Remember me</Label>
+          <Checkbox isSelected={rememberMe} onChange={setRememberMe}>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            <Checkbox.Content>
+              <Label>Remember me</Label>
+            </Checkbox.Content>
           </Checkbox>
         </div>
-        
+
         <TurnstileModal
           open={modalOpen}
           onToken={(t) => {
-            turnstileCallback(t); 
+            turnstileCallback(t);
           }}
         />
 
         {/* 4. Button dropped startContent & color. Icons go in children. */}
-        <Button
-          fullWidth
-          isDisabled={loading}
-          type="submit"
-          variant="primary"
-        >
+        <Button fullWidth isDisabled={loading} type="submit" variant="primary">
           {loading ? (
             <>
               <Spinner size="sm" />

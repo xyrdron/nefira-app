@@ -9,7 +9,11 @@ export function loadDynamicComponent<Props = {}>(
   { ssr = false } = {},
 ): ComponentType<Props> {
   return dynamic(importFn as Loader<any>, {
-    loading: () => <Spinner size="lg" />,
+    loading: () => (
+      <div className="flex justify-center items-center">
+        <Spinner size="xl" />
+      </div>
+    ),
     ssr,
   }) as unknown as ComponentType<Props>;
 }
