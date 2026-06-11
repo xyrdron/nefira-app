@@ -30,8 +30,8 @@ export default function ForgotPassword() {
 
       <div className="space-y-3">
         <Input
-          isRequired
-          label="Email"
+          //isRequired
+          //label="Email"
           placeholder="gamer@nefira.xyz"
           type="email"
           value={email}
@@ -47,12 +47,12 @@ export default function ForgotPassword() {
 
         <Button
           fullWidth
-          color="primary"
+          //color="primary"
           isDisabled={loading}
-          startContent={!loading ? <Key size={16} /> : undefined}
+          //startContent={!loading ? <Key size={16} /> : undefined}
           type="submit"
         >
-          {loading ? <Spinner color="white" size="sm" /> : "Send Reset Link"}
+          {loading ? <Spinner size="sm" /> : "Send Reset Link"}
         </Button>
         <p className="text-center text-xs text-default-400">
           Already chat with us?{" "}

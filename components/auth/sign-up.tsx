@@ -200,9 +200,9 @@ export default function CreateUserPage() {
         
         {!inviteEnabled ? null : (
           <Button
-            as={Link}
+            //as={Link}
             className="mt-4"
-            href="/invite"
+            //href="/invite"
             variant="primary"
           >
             I have an invite code

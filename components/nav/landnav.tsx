@@ -25,20 +25,7 @@ export const Navbar = async () => {
   const searchInput = (
     <Input
       aria-label="Search"
-      classnames={{
-        inputWrapper: "bg-default-100 w-full lg:w-[240px]",
-        input: "text-sm",
-      }}
-      endcontent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
-          K
-        </Kbd>
-      }
-      labelplacement="outside"
       placeholder="Search..."
-      startcontent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
       type="search"
     />
   );
@@ -92,17 +79,17 @@ export const Navbar = async () => {
 
           <ul className="flex items-center gap-2">
             <li>
-              <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
+              <Link aria-label="Twitter" href={siteConfig.links.twitter}>
                 <TwitterIcon className="text-default-500 hover:text-foreground transition-colors" />
               </Link>
             </li>
             <li>
-              <Link isExternal aria-label="Discord" href={siteConfig.links.discord}>
+              <Link aria-label="Discord" href={siteConfig.links.discord}>
                 <DiscordIcon className="text-default-500 hover:text-foreground transition-colors" />
               </Link>
             </li>
             <li>
-              <Link isExternal aria-label="Github" href={siteConfig.links.github}>
+              <Link aria-label="Github" href={siteConfig.links.github}>
                 <GithubIcon className="text-default-500 hover:text-foreground transition-colors" />
               </Link>
             </li>
@@ -117,7 +104,6 @@ export const Navbar = async () => {
               <NextLink href="/app" passHref legacyBehavior>
                 <Button
                   className="text-sm font-normal text-default-600 bg-default-100 hover:bg-default-200"
-                  startcontent={<HeartFilledIcon className="text-danger animate-pulse" />}
                 >
                   Welcome {session.user.displayUsername}
                 </Button>

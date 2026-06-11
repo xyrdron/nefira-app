@@ -54,10 +54,12 @@ export default function AuthPage() {
       return (
         <Alert
           color="danger"
-          description={`${error.message}`}
+          //description={`${error.message}`}
           title="An unexpected error occurred"
-          variant="faded"
-        />
+          //variant="faded"
+        >
+          <p>An unexpected error occurred</p>
+        </Alert>
       );
 
     if (session?.user) return (

@@ -270,13 +270,13 @@ export default function Chatbox({ channelId }: { channelId: string }) {
       };
 
       setMessages((prev) => [systemMsg, ...prev]);
-      addToast({
-        title: "Unable to send message",
-        description: `"${msg.content}" was unable to be delivered.`,
-        color: "warning",
-        variant: "flat",
-        timeout: 5000,
-      });
+      //addToast({
+        //title: "Unable to send message",
+        //description: `"${msg.content}" was unable to be delivered.`,
+        //color: "warning",
+        //variant: "flat",
+        //timeout: 5000,
+      //});
     }
   };
 
@@ -390,12 +390,12 @@ export default function Chatbox({ channelId }: { channelId: string }) {
       </Card>
 
       {selectedUserId && (
-        <ProfileModal
-          isOpen={true}
-          userId={selectedUserId}
-          onClose={() => setSelectedUserId(null)}
-        />
-      )}
+        //<ProfileModal
+          //isOpen={true}
+          //userId={selectedUserId}
+          //onClose={() => setSelectedUserId(null)}
+        ///>
+      <p></p>)}
     </div>
   );
 }

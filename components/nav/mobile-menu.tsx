@@ -30,7 +30,7 @@ export function MobileMenu({ searchInput }: { searchInput: React.ReactNode }) {
 
       {/* Fallback Static Icons alongside hamburger */}
       <div className="flex items-center gap-2">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
+        <Link aria-label="Github" href={siteConfig.links.github}>
           <GithubIcon className="text-default-500" />
         </Link>
         <ThemeSwitch />
@@ -44,15 +44,7 @@ export function MobileMenu({ searchInput }: { searchInput: React.ReactNode }) {
             {siteConfig.navMenuItems.map((item, index) => (
               <li key={`${item.label}-${index}`}>
                 <Link
-                  color={
-                    index === 2
-                      ? "primary"
-                      : index === siteConfig.navMenuItems.length - 1
-                        ? "danger"
-                        : "foreground"
-                  }
                   href={item.href || "#"}
-                  size="lg"
                   className="w-full block py-1"
                   onClick={() => setIsOpen(false)}
                 >

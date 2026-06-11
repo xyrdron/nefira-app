@@ -18,7 +18,6 @@ export default function Home() {
 
       <div className="flex gap-3">
         <Button
-          isExternal
           onPress={() => {}}
         >
           Sign up

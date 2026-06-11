@@ -16,10 +16,10 @@ export default function Error({ error }: { error: Error; reset: () => void }) {
         <div className="flex items-center justify-center h-screen bg-black">
           <Alert
             color="danger"
-            description={`${error.message}`}
+            //description={`${error.message}`}
             title="Nefira crashed unexpectedly, please refresh the page and try again."
-            variant="faded"
-          />
+            //variant="faded"
+          ><p>An unexpected error occurred</p></Alert>
         </div>
       </main>
     </div>

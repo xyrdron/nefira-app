@@ -70,7 +70,7 @@ export default function ChatLayout() {
     return (
       <div className="flex items-center justify-center h-screen bg-black">
         {/* v3 Compound Alert */}
-        <Alert status="danger" variant="faded">
+        <Alert status="danger"> //variant="faded"
           <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>
@@ -123,7 +123,7 @@ export default function ChatLayout() {
                 key={dm.channelId ?? "home"}
                 className="justify-start p-3 rounded-xl"
                 size="lg"
-                variant={activeChannel === dm.channelId ? "solid" : "ghost"}
+                //variant={activeChannel === dm.channelId ? "solid" : "ghost"}
                 onPress={() => {
                   router.push(
                     dm.channelId ? `/app/${dm.channelId}` : "/app/home",
