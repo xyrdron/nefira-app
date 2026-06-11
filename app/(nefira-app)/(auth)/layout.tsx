@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Card } from "@heroui/card";
+import { Card } from "@heroui/react";
 
 import { siteConfig } from "@/config/site";
 import Navbar from "@/components/nav/authnav";

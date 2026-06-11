@@ -44,7 +44,11 @@ export default function AuthPage() {
     action === "invite" ||
     action === "reset"
   ) {
-    if (isPending) return <Spinner size="lg" />;
+    if (isPending) return (
+      <div className="flex justify-center items-center">
+        <Spinner size="xl" />
+      </div>
+    );
 
     if (error)
       return (
@@ -56,7 +60,11 @@ export default function AuthPage() {
         />
       );
 
-    if (session?.user) return <Spinner size="lg" />;
+    if (session?.user) return (
+      <div className="flex justify-center items-center">
+        <Spinner size="xl" />
+      </div>
+    );
 
     if (action === "signup") {
       const SignUp = loadDynamicComponent(() => import(sign_up));

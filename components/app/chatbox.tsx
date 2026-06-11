@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Card, CardBody, addToast, Spinner } from "@heroui/react";
+import { Card, Toast as addToast, Spinner } from "@heroui/react";
 import Pusher, { Channel } from "pusher-js";
 
 import ProfileModal from "./profilemodal";
@@ -290,10 +290,12 @@ export default function Chatbox({ channelId }: { channelId: string }) {
   return (
     <div className="flex flex-col flex-1 gap-3 overflow-hidden">
       <Card className="flex-1 rounded-2xl overflow-hidden flex flex-col">
-        <CardBody className="flex-1 min-h-0 p-4 overflow-y-auto flex flex-col-reverse">
+        {/* Replaced CardBody with Card.Content */}
+        <Card.Content className="flex-1 min-h-0 p-4 overflow-y-auto flex flex-col-reverse">
           {loadingChannel ? (
             <div className="flex justify-center items-center flex-1">
-              <Spinner color="primary" size="lg" />
+              {/* Removed redundant explicit primary color */}
+              <Spinner size="lg" />
             </div>
           ) : messages.length === 0 ? (
             <div className="text-center text-gray-400 mt-8">
@@ -357,15 +359,16 @@ export default function Chatbox({ channelId }: { channelId: string }) {
           )}
           {loadingOlder && (
             <div className="flex justify-center py-2">
-              <Spinner color="primary" size="md" />
+              <Spinner size="md" />
             </div>
           )}
           <div ref={chatContainerRef} />
-        </CardBody>
+        </Card.Content>
       </Card>
 
       <Card className="rounded-2xl flex-shrink-0">
-        <CardBody className="p-2">
+        {/* Replaced CardBody with Card.Content */}
+        <Card.Content className="p-2">
           <div className="flex gap-2 items-center">
             <input
               className="flex-1 px-3 py-2 rounded-xl border border-default-200 bg-default-50 text-default-foreground focus:outline-none focus:ring focus:ring-primary/50"
@@ -383,7 +386,7 @@ export default function Chatbox({ channelId }: { channelId: string }) {
               Send
             </button>
           </div>
-        </CardBody>
+        </Card.Content>
       </Card>
 
       {selectedUserId && (

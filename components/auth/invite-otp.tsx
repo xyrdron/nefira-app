@@ -1,5 +1,5 @@
 "use client";
-import { Alert, InputOtp, Button, Spinner } from "@heroui/react";
+import { Alert, InputOTP, Button, Spinner } from "@heroui/react";
 import { Key } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -50,7 +50,7 @@ export default function InviteOtp() {
       </div>
 
       <div className="m-auto flex space-y-3 justify-center pb-4">
-        <InputOtp
+        <InputOTP
           isRequired
           aria-label="OTP input field"
           errorMessage="Invalid invite code"
