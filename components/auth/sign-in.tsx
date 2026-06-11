@@ -1,8 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Button, Input, Checkbox, Spinner, Alert } from "@heroui/react";
+import React, { useState } from "react";
+import {
+  Button,
+  Input,
+  Checkbox,
+  Spinner,
+  Alert,
+  TextField,
+  Label,
+} from "@heroui/react";
 import { Key } from "lucide-react";
 import Link from "next/link";
 
@@ -18,9 +26,9 @@ export default function SignIn() {
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertVariant, setAlertVariant] = useState<
     "success" | "danger" | "warning"
-  >("success");
-  const [alertMessage, setAlertMessage] = useState("");
-  const [alertTitle, setAlertTitle] = useState("");
+  >("danger");
+  const [alertMessage, setAlertMessage] = useState("An error has occured");
+  const [alertTitle, setAlertTitle] = useState("Error");
 
   const router = useRouter();
 
@@ -43,20 +51,21 @@ export default function SignIn() {
 
   function waitForTurnstile() {
     return new Promise<string>((resolve) => {
-      setModalOpen(true); // show modal
+      setModalOpen(true);
       const handler = (token: string) => {
-        setModalOpen(false); // hide modal
-        resolve(token); // resolve promise with token
+        setModalOpen(false);
+        resolve(token);
       };
 
       setTurnstileCallback(() => handler);
     });
   }
 
-  const handleSignIn = async (e: { preventDefault: () => void }) => {
+  const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     showAlert("", "", alertVariant, false);
+
     try {
       const token = await waitForTurnstile();
       const { data, error } = await signIn.email(
@@ -97,7 +106,6 @@ export default function SignIn() {
         );
         router.push("/app/home");
       } else {
-        // No user returned
         showAlert(
           "There is a problem with your account",
           "Please contact support for information",
@@ -117,13 +125,18 @@ export default function SignIn() {
 
   return (
     <form className="space-y-4" onSubmit={handleSignIn}>
-      <Alert
-        color={alertVariant}
-        description={alertMessage}
-        isVisible={alertVisible}
-        title={alertTitle}
-        variant="faded"
-      />
+      {alertVisible && (
+        <Alert status={alertVariant}>
+          <Alert.Indicator />
+          <Alert.Content>
+            {alertTitle && <Alert.Title>{alertTitle}</Alert.Title>}
+            {alertMessage && (
+              <Alert.Description>{alertMessage}</Alert.Description>
+            )}
+          </Alert.Content>
+        </Alert>
+      )}
+
       <div className="space-y-2 text-center">
         <h1 className="text-xl font-semibold">Welcome back!</h1>
         <p className="text-sm text-default-500">
@@ -132,48 +145,54 @@ export default function SignIn() {
       </div>
 
       <div className="space-y-3">
-        <Input
-          isRequired
-          label="Email"
-          placeholder="gamer@nefira.xyz"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+        {/* 2. Inputs use the new TextField wrapper */}
+        <TextField isRequired type="email" value={email} onChange={setEmail}>
+          <Label>Email</Label>
+          <Input placeholder="gamer@nefira.xyz" />
+        </TextField>
 
-        <Input
+        <TextField
           isRequired
-          label="Password"
-          placeholder="••••••••"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          onChange={setPassword}
+        >
+          <Label>Password</Label>
+          <Input placeholder="••••••••" />
+        </TextField>
 
         <div className="flex items-center gap-2">
-          <Checkbox
-            isSelected={rememberMe}
-            size="sm"
-            onValueChange={setRememberMe}
-          >
-            Remember me
+          {/* 3. Checkbox requires a Label child and uses onChange */}
+          <Checkbox isSelected={rememberMe} onChange={setRememberMe}>
+            <Checkbox.Control>
+              <Checkbox.Indicator />
+            </Checkbox.Control>
+            <Checkbox.Content>
+              <Label>Remember me</Label>
+            </Checkbox.Content>
           </Checkbox>
         </div>
+
         <TurnstileModal
           open={modalOpen}
           onToken={(t) => {
-            turnstileCallback(t); // call the current callback
+            turnstileCallback(t);
           }}
         />
 
-        <Button
-          fullWidth
-          color="primary"
-          isDisabled={loading}
-          startContent={!loading ? <Key size={16} /> : undefined}
-          type="submit"
-        >
-          {loading ? <Spinner color="white" size="sm" /> : "Login"}
+        {/* 4. Button dropped startContent & color. Icons go in children. */}
+        <Button fullWidth isDisabled={loading} type="submit" variant="primary">
+          {loading ? (
+            <>
+              <Spinner size="sm" />
+              <span>Logging in...</span>
+            </>
+          ) : (
+            <>
+              <Key size={16} />
+              <span>Login</span>
+            </>
+          )}
         </Button>
 
         <p className="text-center text-xs text-default-400">

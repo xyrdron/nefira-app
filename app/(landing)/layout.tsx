@@ -1,4 +1,4 @@
-import { Link } from "@heroui/link";
+import { Link } from "@heroui/react";
 import { Navbar } from "@/components/nav/landnav";
 
 export default function LandingLayout({
@@ -14,10 +14,8 @@ export default function LandingLayout({
       </main>
       <footer className="w-full flex items-center justify-center py-3">
         <Link
-          isExternal
           className="flex items-center gap-1 text-current"
           href="https://xyrdron.com"
-          title="Xyrdron homepage"
         >
           <span className="text-default-600">Nefira Indev |</span>
           <p className="text-primary">Xyrdron</p>

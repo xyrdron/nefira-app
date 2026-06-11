@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardBody, Button, Spinner, Alert } from "@heroui/react";
+import { Card, Button, Spinner, Alert } from "@heroui/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 
@@ -52,35 +52,41 @@ export default function ChatLayout() {
     loadChannels();
   }, [session?.user?.id]);
 
-  // derive active channel FROM URL (no state)
+  // Derive active channel FROM URL (no state)
   const activeChannel =
     pathname?.split("/").pop() === "home"
       ? null
       : pathname?.split("/").pop() ?? null;
 
-  if (isPending)
+  if (isPending) {
     return (
       <div className="flex items-center justify-center h-screen w-screen bg-black">
-        <Spinner color="primary" size="lg" />
+        <Spinner size="lg" />
       </div>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <div className="flex items-center justify-center h-screen bg-black">
-        <Alert
-          color="danger"
-          description={error.message}
-          title="Nefira crashed unexpectedly, please refresh the page and try again."
-          variant="faded"
-        />
+        {/* v3 Compound Alert */}
+        <Alert status="danger"> //variant="faded"
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>
+              Nefira crashed unexpectedly, please refresh the page and try again.
+            </Alert.Title>
+            <Alert.Description>{error.message}</Alert.Description>
+          </Alert.Content>
+        </Alert>
       </div>
     );
+  }
 
   if (!session?.user) {
     return (
       <div className="flex items-center justify-center h-screen w-screen bg-black">
-        <Spinner color="primary" size="lg" />
+        <Spinner size="lg" />
       </div>
     );
   }
@@ -97,25 +103,27 @@ export default function ChatLayout() {
     <div className="flex h-screen w-screen bg-black p-3 gap-3">
       {/* Server List */}
       <Card className="w-16 h-full flex-shrink-0 rounded-2xl">
-        <CardBody className="flex flex-col items-center justify-start gap-3 py-4">
+        {/* v3 Card uses Card.Content instead of CardBody */}
+        <Card.Content className="flex flex-col items-center justify-start gap-3 py-4">
           <div className="w-10 h-10 bg-default-200 rounded-full" />
           <div className="w-10 h-10 bg-default-200 rounded-full" />
           <div className="w-10 h-10 bg-default-200 rounded-full" />
-        </CardBody>
+        </Card.Content>
       </Card>
 
       {/* Channel List */}
       <Card className="w-64 h-full flex-shrink-0 rounded-2xl">
-        <CardBody className="flex flex-col gap-3 p-4 overflow-y-auto">
+        {/* v3 Card uses Card.Content instead of CardBody */}
+        <Card.Content className="flex flex-col gap-3 p-4 overflow-y-auto">
           {loadingChannels ? (
             <Spinner size="sm" />
           ) : (
             dmButtons.map((dm) => (
               <Button
                 key={dm.channelId ?? "home"}
-                className="justify-start p-3 rounded-xl"
+                className="justify-start p-3 w-full rounded-xl"
                 size="lg"
-                variant={activeChannel === dm.channelId ? "solid" : "ghost"}
+                //variant={activeChannel === dm.channelId ? "solid" : "ghost"}
                 onPress={() => {
                   router.push(
                     dm.channelId ? `/app/${dm.channelId}` : "/app/home",
@@ -126,7 +134,7 @@ export default function ChatLayout() {
               </Button>
             ))
           )}
-        </CardBody>
+        </Card.Content>
       </Card>
 
       {/* Chat */}
@@ -137,9 +145,7 @@ export default function ChatLayout() {
           <div className="flex-1 flex items-center justify-center bg-default-50 rounded-2xl">
             <div className="text-center">
               <h1 className="text-4xl font-bold mb-2">Welcome to Nefira!</h1>
-              <p className="text-lg text-gray-200">
-                Choose a channel to start
-              </p>
+              <p className="text-lg text-gray-200">Choose a channel to start</p>
             </div>
           </div>
         )}

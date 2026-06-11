@@ -1,8 +1,15 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Button, Input, Spinner, Alert } from "@heroui/react";
+import React, { useState, useEffect } from "react";
+import { 
+  Button, 
+  Input, 
+  Spinner, 
+  Alert, 
+  TextField, 
+  Label 
+} from "@heroui/react";
 import { Key } from "lucide-react";
 import Link from "next/link";
 
@@ -38,7 +45,6 @@ export default function CreateUserPage() {
   useEffect(() => {
     if (!username) {
       setUsernameError("");
-
       return;
     }
 
@@ -75,17 +81,17 @@ export default function CreateUserPage() {
 
   function waitForTurnstile() {
     return new Promise<string>((resolve) => {
-      setModalOpen(true); // show modal
+      setModalOpen(true); 
       const handler = (token: string) => {
-        setModalOpen(false); // hide modal
-        resolve(token); // resolve promise with token
+        setModalOpen(false); 
+        resolve(token); 
       };
 
       setTurnstileCallback(() => handler);
     });
   }
 
-  const handleCreate = async (e: { preventDefault: () => void }) => {
+  const handleCreate = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     showAlert("", "", alertVariant, false);
@@ -97,7 +103,6 @@ export default function CreateUserPage() {
         "warning",
       );
       setLoading(false);
-
       return;
     }
 
@@ -131,7 +136,6 @@ export default function CreateUserPage() {
           error.message || "Unknown error",
           "warning",
         );
-
         return;
       }
 
@@ -143,7 +147,6 @@ export default function CreateUserPage() {
         );
         router.push("/app/home");
       } else {
-        // No user returned
         showAlert(
           "There is a problem with your account",
           "Please contact support for information",
@@ -151,18 +154,17 @@ export default function CreateUserPage() {
         );
       }
 
-      if (error) {
-        //setMessage({
-        //text: error.message || "Failed to create user.",
-        //type: "error",
-        //});
-      } else if (data) {
-        //setMessage({ text: "User created successfully!", type: "success" });
+      if (!error && data) {
         setEmail("");
         setPassword("");
+        setPasswordConf("");
       }
     } catch {
-      //setMessage({ text: "Unexpected error occurred.", type: "error" });
+      showAlert(
+        "An unexpected error occurred",
+        "If the error persists please contact support",
+        "danger",
+      );
     } finally {
       setLoading(false);
     }
@@ -178,40 +180,51 @@ export default function CreateUserPage() {
   if (process.env.NEXT_PUBLIC_AUTH_DISABLED === "true") {
     return (
       <div>
-        <Alert
-          color="danger"
-          description="You are not able to create a new account at this time. Please try again later."
-          title="Sign ups are currently disabled"
-          variant="faded"
-        />
+        {/* Disabled Auth Alert updated to v3 Compound Component */}
+        <Alert status="danger">
+          <Alert.Indicator />
+          <Alert.Content>
+            <Alert.Title>Sign ups are currently disabled</Alert.Title>
+            <Alert.Description>
+              You are not able to create a new account at this time. Please try again later.
+            </Alert.Description>
+          </Alert.Content>
+        </Alert>
+
         <p className="pt-3 text-center text-xs text-default-400">
           Already chat with us?{" "}
           <Link className="text-primary hover:underline" href="/login">
             Sign In
           </Link>
         </p>
-        <Button
-          as={Link}
-          className="mt-4"
-          color="primary"
-          hidden={!inviteEnabled}
-          href="/invite"
-        >
-          I have an invite code
-        </Button>
+        
+        {!inviteEnabled ? null : (
+          <Button
+            //as={Link}
+            className="mt-4"
+            //href="/invite"
+            variant="primary"
+          >
+            I have an invite code
+          </Button>
+        )}
       </div>
     );
   }
 
   return (
     <form className="space-y-4" onSubmit={handleCreate}>
-      <Alert
-        color={alertVariant}
-        description={alertMessage}
-        isVisible={alertVisible}
-        title={alertTitle}
-        variant="faded"
-      />
+      {/* Form Alert updated to v3 Compound Component */}
+      {alertVisible && (
+        <Alert status={alertVariant}>
+          <Alert.Indicator />
+          <Alert.Content>
+            {alertTitle && <Alert.Title>{alertTitle}</Alert.Title>}
+            {alertMessage && <Alert.Description>{alertMessage}</Alert.Description>}
+          </Alert.Content>
+        </Alert>
+      )}
+
       <div className="space-y-2 text-center">
         <h1 className="text-xl font-semibold">Create an account</h1>
         <p className="text-sm text-default-500">
@@ -219,69 +232,90 @@ export default function CreateUserPage() {
         </p>
       </div>
 
-      <div className="space-y-3">
-        <Input
+      <div className="space-y-4">
+        {/* Inputs mapped to TextField architecture with fixed onChange */}
+        <TextField
           isRequired
-          description="This is how others see you, you can use special characters!!"
-          label="Display Name"
-          placeholder="a super cool person!"
           type="text"
           value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-        <Input
+          onChange={setDisplayName}
+        >
+          <Label>Display Name</Label>
+          <Input placeholder="a super cool person!" />
+          <p className="text-xs text-default-400 mt-1">
+            This is how others see you, you can use special characters!!
+          </p>
+        </TextField>
+
+        <TextField
           isRequired
-          description="This is your username, it must be unique and can only contain letters, numbers, dots, underscores, and hyphens."
-          errorMessage={unError}
           isInvalid={!!unError}
-          label="Username"
-          placeholder="gamer123"
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <Input
+          onChange={setUsername}
+        >
+          <Label>Username</Label>
+          <Input placeholder="gamer123" />
+          <p className="text-xs text-default-400 mt-1">
+            This is your username, it must be unique and can only contain letters, numbers, dots, underscores, and hyphens.
+          </p>
+          {unError && <p className="text-xs text-danger mt-1">{unError}</p>}
+        </TextField>
+
+        <TextField
           isRequired
-          label="Email"
-          placeholder="gamer@nefira.xyz"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+          onChange={setEmail}
+        >
+          <Label>Email</Label>
+          <Input placeholder="gamer@nefira.xyz" />
+        </TextField>
 
-        <Input
+        <TextField
           isRequired
-          label="Password"
-          placeholder="••••••••"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          onChange={setPassword}
+        >
+          <Label>Password</Label>
+          <Input placeholder="••••••••" />
+        </TextField>
 
-        <Input
+        <TextField
           isRequired
-          label="Confirm Password"
-          placeholder="••••••••"
           type="password"
           value={passwordConf}
-          onChange={(e) => setPasswordConf(e.target.value)}
-        />
+          onChange={setPasswordConf}
+        >
+          <Label>Confirm Password</Label>
+          <Input placeholder="••••••••" />
+        </TextField>
 
         <TurnstileModal
           open={modalOpen}
           onToken={(t) => {
-            turnstileCallback(t); // call the current callback
+            turnstileCallback(t);
           }}
         />
 
         <Button
           fullWidth
-          color="primary"
           isDisabled={loading}
-          startContent={!loading ? <Key size={16} /> : undefined}
           type="submit"
+          variant="primary"
         >
-          {loading ? <Spinner color="white" size="sm" /> : "Create Account"}
+          {loading ? (
+            <>
+              <Spinner size="sm" />
+              <span>Creating Account...</span>
+            </>
+          ) : (
+            <>
+              <Key size={16} />
+              <span>Create Account</span>
+            </>
+          )}
         </Button>
 
         <p className="text-center text-xs text-default-400">

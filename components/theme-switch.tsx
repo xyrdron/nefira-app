@@ -1,8 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { SwitchProps, useSwitch } from "@heroui/switch";
+import { Switch } from "@heroui/react";
 import { useTheme } from "next-themes";
 import { useIsSSR } from "@react-aria/ssr";
 import clsx from "clsx";
@@ -11,7 +10,10 @@ import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
 
 export interface ThemeSwitchProps {
   className?: string;
-  classNames?: SwitchProps["classNames"];
+  classNames?: {
+    base?: string;
+    control?: string;
+  };
 }
 
 export const ThemeSwitch: FC<ThemeSwitchProps> = ({
@@ -21,61 +23,36 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
   const { theme, setTheme } = useTheme();
   const isSSR = useIsSSR();
 
-  const onChange = () => {
-    theme === "light" ? setTheme("dark") : setTheme("light");
+  const isSelected = theme === "light" || isSSR;
+
+  const handleToggle = (checked: boolean) => {
+    setTheme(checked ? "light" : "dark");
   };
 
-  const {
-    Component,
-    slots,
-    isSelected,
-    getBaseProps,
-    getInputProps,
-    getWrapperProps,
-  } = useSwitch({
-    isSelected: theme === "light" || isSSR,
-    "aria-label": `Switch to ${theme === "light" || isSSR ? "dark" : "light"} mode`,
-    onChange,
-  });
-
   return (
-    <Component
-      {...getBaseProps({
-        className: clsx(
-          "px-px transition-opacity hover:opacity-80 cursor-pointer",
-          className,
-          classNames?.base,
-        ),
-      })}
+    <Switch
+      isSelected={isSelected}
+      aria-label={`Switch to ${isSelected ? "dark" : "light"} mode`}
+      onChange={handleToggle}
+      className={clsx(
+        "px-px transition-opacity hover:opacity-80 cursor-pointer",
+        className,
+        classNames?.base,
+      )}
     >
-      <VisuallyHidden>
-        <input {...getInputProps()} />
-      </VisuallyHidden>
-      <div
-        {...getWrapperProps()}
-        className={slots.wrapper({
-          class: clsx(
-            [
-              "w-auto h-auto",
-              "bg-transparent",
-              "rounded-lg",
-              "flex items-center justify-center",
-              "group-data-[selected=true]:bg-transparent",
-              "!text-default-500",
-              "pt-px",
-              "px-0",
-              "mx-0",
-            ],
-            classNames?.wrapper,
-          ),
-        })}
+      <Switch.Control
+        className={clsx(
+          "w-auto h-auto bg-transparent rounded-lg flex items-center justify-center pt-px px-0 mx-0",
+          "!text-default-500 group-data-[selected=true]:bg-transparent",
+          classNames?.control
+        )}
       >
-        {!isSelected || isSSR ? (
+        {isSelected ? (
           <SunFilledIcon size={22} />
         ) : (
           <MoonFilledIcon size={22} />
         )}
-      </div>
-    </Component>
+      </Switch.Control>
+    </Switch>
   );
 };

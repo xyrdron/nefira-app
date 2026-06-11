@@ -44,19 +44,29 @@ export default function AuthPage() {
     action === "invite" ||
     action === "reset"
   ) {
-    if (isPending) return <Spinner size="lg" />;
+    if (isPending) return (
+      <div className="flex justify-center items-center">
+        <Spinner size="xl" />
+      </div>
+    );
 
     if (error)
       return (
         <Alert
           color="danger"
-          description={`${error.message}`}
+          //description={`${error.message}`}
           title="An unexpected error occurred"
-          variant="faded"
-        />
+          //variant="faded"
+        >
+          <p>An unexpected error occurred</p>
+        </Alert>
       );
 
-    if (session?.user) return <Spinner size="lg" />;
+    if (session?.user) return (
+      <div className="flex justify-center items-center">
+        <Spinner size="xl" />
+      </div>
+    );
 
     if (action === "signup") {
       const SignUp = loadDynamicComponent(() => import(sign_up));

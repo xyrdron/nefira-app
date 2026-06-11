@@ -1,18 +1,10 @@
 import {
-  Navbar as HeroUINavbar,
-  NavbarContent,
-  NavbarMenu,
-  NavbarMenuToggle,
-  NavbarBrand,
-  NavbarItem,
-  NavbarMenuItem,
-} from "@heroui/navbar";
-import { Button } from "@heroui/button";
-import { Kbd } from "@heroui/kbd";
-import { Link } from "@heroui/link";
-import { Input } from "@heroui/input";
-import { link as linkStyles } from "@heroui/theme";
-import { Alert } from "@heroui/alert";
+  Button,
+  Kbd,
+  Link,
+  Input,
+  Alert,
+} from "@heroui/react";
 import NextLink from "next/link";
 import clsx from "clsx";
 import { headers } from "next/headers";
@@ -27,138 +19,110 @@ import {
   SearchIcon,
 } from "@/components/icons";
 import { auth } from "@/lib/auth";
+import { MobileMenu } from "./mobile-menu"; // Adjust import path accordingly
 
 export const Navbar = async () => {
   const searchInput = (
     <Input
       aria-label="Search"
-      classNames={{
-        inputWrapper: "bg-default-100",
-        input: "text-sm",
-      }}
-      endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
-          K
-        </Kbd>
-      }
-      labelPlacement="outside"
       placeholder="Search..."
-      startContent={
-        <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
-      }
       type="search"
     />
   );
 
-  // Authentication
+  // Authentication Context Fetch
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   return (
-    <HeroUINavbar maxWidth="xl" position="sticky">
-      <Alert
-        className="absolute top-16 left-1/2 transform -translate-x-1/2"
-        color="primary"
-        description="Nefira is still in development and is very unstable, you require an invite code to access the site."
-        title="Notice to web traffic"
-        variant="bordered"
-      />
-      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-        <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
-            {/*<Logo />*/}
-            <p className="font-bold text-inherit">NEFIRA (INDEV)</p>
+    <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg navbar-container">
+      {/* Dev Warning Banner */}
+      <Alert status="warning">
+        <Alert.Indicator />
+        <Alert.Title className="text-sm font-medium">Notice to web traffic</Alert.Title>
+          <Alert.Description className="text-sm">
+            Nefira is still in development and is very unstable, you require an invite code to access the site.
+          </Alert.Description>
+
+      </Alert>
+
+      <header className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 gap-4">
+        {/* Left Side: Brand Logo and Desktop Nav Links */}
+        <div className="flex items-center gap-6">
+          <NextLink className="flex justify-start items-center gap-1 flex-shrink-0" href="/">
+            <p className="font-bold text-inherit tracking-wide">NEFIRA (INDEV)</p>
           </NextLink>
-        </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
-          {siteConfig.navItems.map((item) => (
-            <NavbarItem key={item.href}>
-              <NextLink
-                className={clsx(
-                  linkStyles({ color: "foreground" }),
-                  "data-[active=true]:text-primary data-[active=true]:font-medium",
-                )}
-                color="foreground"
-                href={item.href}
-              >
-                {item.label}
-              </NextLink>
-            </NavbarItem>
-          ))}
-        </ul>
-      </NavbarContent>
 
-      <NavbarContent
-        className="hidden sm:flex basis-1/5 sm:basis-full"
-        justify="end"
-      >
-        <NavbarItem className="hidden sm:flex gap-2">
-          <Link isExternal aria-label="Twitter" href={siteConfig.links.twitter}>
-            <TwitterIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Discord" href={siteConfig.links.discord}>
-            <DiscordIcon className="text-default-500" />
-          </Link>
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-        </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          {session ? (
-            <Button
-              isExternal
-              as={Link}
-              className="text-sm font-normal text-default-600 bg-default-100"
-              // use the api of your betterauth to login, also use a modal for you login as well
-              href={session ? `/app` : "/app/login"}
-              startContent={<HeartFilledIcon className="text-danger" />}
-              variant="flat"
-            >
-              {session ? (
-                <>Welcome {session.user.displayUsername}</>
-              ) : (
-                <>Sign in</>
-              )}
-            </Button>
-          ) : (
-            <></>
-          )}
-        </NavbarItem>
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-        <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-          <GithubIcon className="text-default-500" />
-        </Link>
-        <ThemeSwitch />
-        <NavbarMenuToggle />
-      </NavbarContent>
-
-      <NavbarMenu>
-        {searchInput}
-        <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href="#"
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
+          {/* Desktop Core Links */}
+          <ul className="hidden md:flex items-center gap-4">
+            {siteConfig.navItems.map((item) => (
+              <li key={item.href}>
+                <NextLink
+                  className={clsx(
+                    "text-sm text-foreground hover:text-primary transition-colors duration-200 data-[active=true]:text-primary data-[active=true]:font-medium"
+                  )}
+                  href={item.href}
+                >
+                  {item.label}
+                </NextLink>
+              </li>
+            ))}
+          </ul>
         </div>
-      </NavbarMenu>
-    </HeroUINavbar>
+
+        {/* Right Side: Search, Social Links, Auth Status */}
+        <div className="hidden md:flex items-center gap-4 flex-1 justify-end">
+          <div className="w-full max-w-[240px] hidden lg:block">
+            {searchInput}
+          </div>
+
+          <ul className="flex items-center gap-2">
+            <li>
+              <Link aria-label="Twitter" href={siteConfig.links.twitter}>
+                <TwitterIcon className="text-default-500 hover:text-foreground transition-colors" />
+              </Link>
+            </li>
+            <li>
+              <Link aria-label="Discord" href={siteConfig.links.discord}>
+                <DiscordIcon className="text-default-500 hover:text-foreground transition-colors" />
+              </Link>
+            </li>
+            <li>
+              <Link aria-label="Github" href={siteConfig.links.github}>
+                <GithubIcon className="text-default-500 hover:text-foreground transition-colors" />
+              </Link>
+            </li>
+            <li>
+              <ThemeSwitch />
+            </li>
+          </ul>
+
+          {/* Authentication Action Button Wrapper Fix */}
+          <div className="flex items-center">
+            {session ? (
+              <NextLink href="/app" passHref legacyBehavior>
+                <Button
+                  className="text-sm font-normal text-default-600 bg-default-100 hover:bg-default-200"
+                >
+                  Welcome {session.user.displayUsername}
+                </Button>
+              </NextLink>
+            ) : (
+              <NextLink href="/app/login" passHref legacyBehavior>
+                <Button
+                  className="text-sm font-medium text-white bg-primary"
+                >
+                  Sign In
+                </Button>
+              </NextLink>
+            )}
+          </div>
+        </div>
+
+        {/* Client-Side Mobile Dropdown Handling */}
+        <MobileMenu searchInput={searchInput} />
+      </header>
+    </nav>
   );
 };
