@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 
 import { authClient } from "@/lib/auth-client";
 import Chatbox from "@/components/app/chatbox";
+import SettingsModal from "@/components/app/settingsmodal";
 
 export default function ChatLayout() {
   const router = useRouter();
@@ -15,6 +16,7 @@ export default function ChatLayout() {
 
   const [channels, setChannels] = useState<any[]>([]);
   const [loadingChannels, setLoadingChannels] = useState(true);
+  const [settings, openSettings] = useState(false);
 
   const hasLoadedChannels = useRef(false);
 
@@ -139,6 +141,9 @@ export default function ChatLayout() {
               </Button>
             ))
           )}
+          <Button variant="primary" onClick={() => openSettings(true)}>
+            Settings
+          </Button>
         </Card.Content>
       </Card>
 
@@ -155,6 +160,9 @@ export default function ChatLayout() {
           </div>
         )}
       </div>
+      {settings && (
+        <SettingsModal isOpen={true} onClose={() => openSettings(false)} />
+      )}
     </div>
   );
 }
