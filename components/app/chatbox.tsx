@@ -291,7 +291,7 @@ export default function Chatbox({ channelId }: { channelId: string }) {
     <div className="flex flex-col flex-1 gap-3 overflow-hidden">
       <Card className="flex-1 rounded-2xl overflow-hidden flex flex-col">
         {/* Replaced CardBody with Card.Content */}
-        <Card.Content className="flex-1 min-h-0 p-4 overflow-y-auto flex flex-col-reverse">
+        <Card.Content className="flex-1 min-h-0 overflow-y-auto flex flex-col-reverse">
           {loadingChannel ? (
             <div className="flex justify-center items-center flex-1">
               {/* Removed redundant explicit primary color */}
@@ -368,7 +368,7 @@ export default function Chatbox({ channelId }: { channelId: string }) {
 
       <Card className="rounded-2xl flex-shrink-0">
         {/* Replaced CardBody with Card.Content */}
-        <Card.Content className="p-2">
+        <Card.Content>
           <div className="flex gap-2 items-center">
             <input
               className="flex-1 px-3 py-2 rounded-xl border border-default-200 bg-default-50 text-default-foreground focus:outline-none focus:ring focus:ring-primary/50"
@@ -390,12 +390,12 @@ export default function Chatbox({ channelId }: { channelId: string }) {
       </Card>
 
       {selectedUserId && (
-        //<ProfileModal
-          //isOpen={true}
-          //userId={selectedUserId}
-          //onClose={() => setSelectedUserId(null)}
-        ///>
-      <p></p>)}
+        <ProfileModal
+          isOpen={true}
+          userId={selectedUserId}
+          onClose={() => setSelectedUserId(null)}
+        />
+        )}
     </div>
   );
 }

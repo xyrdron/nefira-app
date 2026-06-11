@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, Button, Spinner, Alert } from "@heroui/react";
+import { Card, Button, Spinner, Alert, buttonVariants } from "@heroui/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 
@@ -56,7 +56,7 @@ export default function ChatLayout() {
   const activeChannel =
     pathname?.split("/").pop() === "home"
       ? null
-      : pathname?.split("/").pop() ?? null;
+      : (pathname?.split("/").pop() ?? null);
 
   if (isPending) {
     return (
@@ -70,11 +70,14 @@ export default function ChatLayout() {
     return (
       <div className="flex items-center justify-center h-screen bg-black">
         {/* v3 Compound Alert */}
-        <Alert status="danger"> //variant="faded"
+        <Alert status="danger">
+          {" "}
+          //variant="faded"
           <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>
-              Nefira crashed unexpectedly, please refresh the page and try again.
+              Nefira crashed unexpectedly, please refresh the page and try
+              again.
             </Alert.Title>
             <Alert.Description>{error.message}</Alert.Description>
           </Alert.Content>
@@ -114,16 +117,18 @@ export default function ChatLayout() {
       {/* Channel List */}
       <Card className="w-64 h-full flex-shrink-0 rounded-2xl">
         {/* v3 Card uses Card.Content instead of CardBody */}
-        <Card.Content className="flex flex-col gap-3 p-4 overflow-y-auto">
+        <Card.Content className="flex flex-col gap-3 overflow-y-auto">
           {loadingChannels ? (
-            <Spinner size="sm" />
+            <div className="flex justify-center items-center">
+              <Spinner size="xl" />
+            </div>
           ) : (
             dmButtons.map((dm) => (
               <Button
                 key={dm.channelId ?? "home"}
-                className="justify-start p-3 w-full rounded-xl"
+                className="justify-start p-4 w-full rounded-xl"
                 size="lg"
-                //variant={activeChannel === dm.channelId ? "solid" : "ghost"}
+                variant={activeChannel === dm.channelId ? "primary" : "outline"}
                 onPress={() => {
                   router.push(
                     dm.channelId ? `/app/${dm.channelId}` : "/app/home",
