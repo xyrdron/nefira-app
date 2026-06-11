@@ -42,13 +42,13 @@ export function MobileMenu({ searchInput }: { searchInput: React.ReactNode }) {
           <div className="w-full">{searchInput}</div>
           <ul className="flex flex-col gap-3 mt-2">
             {siteConfig.navMenuItems.map((item, index) => (
-              <li key={`${item.label}-${index}`}>
+              <li key={`${item}-${index}`}>
                 <Link
-                  href={item.href || "#"}
+                  href={item || "#"}
                   className="w-full block py-1"
                   onClick={() => setIsOpen(false)}
                 >
-                  {item.label}
+                  {item}
                 </Link>
               </li>
             ))}
