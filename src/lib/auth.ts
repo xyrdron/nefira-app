@@ -1,21 +1,23 @@
-// @ts-ignore
 import { betterAuth } from "better-auth";
-// @ts-ignore
+
 import { prismaAdapter } from "better-auth/adapters/prisma";
-// Use the shared Prisma instance that is initialized with the adapter
 import { prisma } from "./prisma";
-// @ts-ignore
+
 import { nextCookies } from "better-auth/next-js";
-// @ts-ignore
+
 import leoProfanity from "leo-profanity";
-// @ts-ignore
+
 import { admin } from "better-auth/plugins";
-// @ts-ignore
 import { username } from "better-auth/plugins";
-// @ts-ignore
 import { haveIBeenPwned } from "better-auth/plugins";
-// @ts-ignore
 import { captcha } from "better-auth/plugins";
+
+import { stripe } from "@better-auth/stripe"
+import Stripe from "stripe"
+
+const stripeClient = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2026-05-27.dahlia", // Latest API version as of Stripe SDK v22.0.0
+})
 
 leoProfanity.loadDictionary("en");
 
@@ -96,6 +98,11 @@ export const auth = betterAuth({
         displayUsername: "post-normalization",
       },
     }),
+    stripe({
+            stripeClient,
+            stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
+            createCustomerOnSignUp: true,
+        }),
     admin(),
     nextCookies(),
   ], // make sure nextCookies is the last plugin in the array (otherwise he used his boomerang too much and it will not work properly)

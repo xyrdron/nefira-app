@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,29 +8,31 @@ datasource db {
 }
 
 model User {
-  id              String    @id
-  name            String
-  email           String
-  emailVerified   Boolean   @default(false)
-  image           String?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @default(now()) @updatedAt
-  username        String?
-  displayUsername String?
-  role            String?
-  banned          Boolean?  @default(false)
-  banReason       String?
-  banExpires      DateTime?
-  sessions        Session[]
-  accounts        Account[]
-  serversOwned    Server[]        @relation("ServerOwner")
+  id                String         @id
+  name              String
+  email             String
+  emailVerified     Boolean        @default(false)
+  image             String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @default(now()) @updatedAt
+  username          String?
+  displayUsername   String?
+  role              String?
+  banned            Boolean?       @default(false)
+  banReason         String?
+  banExpires        DateTime?
+  sessions          Session[]
+  accounts          Account[]
+  serversOwned      Server[]       @relation("ServerOwner")
   serverMemberships ServerMember[]
-  messages        Message[]
+  messages          Message[]
+
+  stripeCustomerId String?
 
   @@unique([email])
   @@unique([username])
   @@map("user")
-  @@index([email,id])
+  @@index([email, id])
 }
 
 model Session {
@@ -46,7 +49,7 @@ model Session {
 
   @@unique([token])
   @@map("session")
-  @@index([userId,token])
+  @@index([userId, token])
 }
 
 model Account {
@@ -93,19 +96,19 @@ model Server {
   members     ServerMember[]
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @default(now()) @updatedAt
+
   @@map("server")
-  @@index([ownerId,id,name])
+  @@index([ownerId, id, name])
 }
 
 model ServerMember {
-  id        String   @id @default(uuid())
-  serverId  String
-  userId    String
-  role      String   @default("member") // member, admin, owner etc.
-  joinedAt  DateTime @default(now())
-  
-  server    Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id       String   @id @default(uuid())
+  serverId String
+  userId   String
+  role     String   @default("member") // member, admin, owner etc.
+  joinedAt DateTime @default(now())
+  server   Server   @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([serverId, userId])
   @@map("server_member")
@@ -121,21 +124,23 @@ model Channel {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
 
-  server    Server    @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  server Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
   @@map("channel")
   @@index([serverId])
 }
 
 model Message {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   content   String
   authorId  String
   channelId String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  channel   Channel   @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  channel Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
   @@map("message")
   @@index([channelId, createdAt])
 }
