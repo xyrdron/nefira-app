@@ -89,6 +89,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                   <Label>Update username</Label>
                   <Input
                     placeholder={"@" + session?.data?.user?.username || "@"}
+                    className="border border-default-200"
                   />
                   {unError && <p className="text-xs text-danger mt-1">{unError}</p>}
                   <FieldError />

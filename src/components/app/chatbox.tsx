@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Card, Toast as addToast, Spinner } from "@heroui/react";
+import { Card, Toast as addToast, Spinner, Button } from "@heroui/react";
 import Pusher, { Channel } from "pusher-js";
 
 import ProfileModal from "./profilemodal";
@@ -378,13 +378,13 @@ export default function Chatbox({ channelId }: { channelId: string }) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
             />
-            <button
+            <Button
               className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:bg-primary/80 shrink-0"
-              disabled={loadingChannel}
+              isDisabled={loadingChannel}
               onClick={sendMessage}
             >
               Send
-            </button>
+            </Button>
           </div>
         </Card.Content>
       </Card>
