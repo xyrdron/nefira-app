@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 // @ts-ignore
 import { prismaAdapter } from "better-auth/adapters/prisma";
 // Use the shared Prisma instance that is initialized with the adapter
-import { prisma } from "../prisma";
+import { prisma } from "./prisma";
 // @ts-ignore
 import { nextCookies } from "better-auth/next-js";
 // @ts-ignore

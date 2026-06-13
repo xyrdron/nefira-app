@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Pusher from "pusher";
 
-import { prisma } from "@/prisma";
+import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 
 const pusher = new Pusher({
