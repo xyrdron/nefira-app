@@ -82,8 +82,8 @@ export default function ProfileModal({
 
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
-      <Modal.Backdrop className="fixed inset-0 z-50 bg-black/50" />
-      <Modal.Container placement="center" className="fixed inset-0 z-50 flex items-center justify-center">
+      <Modal.Backdrop>
+      <Modal.Container placement="center">
         <Modal.Dialog>
           <Modal.Header className="flex gap-3 items-center">
             {user && (
@@ -164,6 +164,7 @@ export default function ProfileModal({
           </Modal.Footer>
         </Modal.Dialog>
       </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   );
 }

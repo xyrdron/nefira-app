@@ -8,8 +8,8 @@ interface SettingsModalProps {
 export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
   return (
     <Modal isOpen={isOpen} onOpenChange={onClose}>
-      <Modal.Backdrop />
-      <Modal.Container placement="center" className="fixed inset-0 z-50 flex items-center justify-center">
+      <Modal.Backdrop>
+      <Modal.Container placement="center">
         <Modal.Dialog>
           <Modal.Header>Settings - Account</Modal.Header>
           <Modal.Body>work in progress</Modal.Body>
@@ -20,6 +20,7 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
           </Modal.Footer>
         </Modal.Dialog>
       </Modal.Container>
+      </Modal.Backdrop>
     </Modal>
   );
 }
