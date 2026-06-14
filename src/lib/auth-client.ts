@@ -1,7 +1,8 @@
 // @ts-ignore
 import { createAuthClient } from "better-auth/react";
 // @ts-ignore
-import { usernameClient, stripeClient } from "better-auth/client/plugins";
+import { usernameClient } from "better-auth/client/plugins";
+import { stripeClient } from "@better-auth/stripe/client"
 
 export const authClient = createAuthClient({
   baseURL: process.env.NEXT_PUBLIC_APP_URL,
