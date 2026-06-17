@@ -24,6 +24,7 @@
     "bcrypt": "6.0.0",
     "better-auth": "^1.6.15",
     "clsx": "2.1.1",
+    "firebase": "^12.15.0",
     "intl-messageformat": "11.2.8",
     "leo-profanity": "^1.9.0",
     "lucide-react": "^1.17.0",
