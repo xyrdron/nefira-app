@@ -2,6 +2,7 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import FirebasePerfProvider from "@/components/FirebaseProvider";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
@@ -50,7 +51,9 @@ export default function RootLayout({
         )}
       >
         <Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
+          <FirebasePerfProvider>
           <main>{children}</main>
+          </FirebasePerfProvider>
         </Providers>
         <GoogleAnalytics gaId="G-8PGY0KW657" />
       </body>
